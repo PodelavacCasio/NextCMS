@@ -5,6 +5,8 @@ out/
 *.tsbuildinfo
 next-env.d.ts
 public/uploads/
-data/*.db-wal
-data/*.db-shm
-data/*.json.imported
+# Živá data (SQLite databáze, importy) — nikdy nepatří do gitu
+data/
+uploads/
+.env
+

@@ -1,0 +1,17 @@
+services:
+  nextcms:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "80:3000"
+    environment:
+      # Hodnoty nastavte v souboru .env vedle tohoto compose souboru:
+      #   ADMIN_PASSWORD=silne-heslo
+      #   SESSION_SECRET=dlouhy-nahodny-retezec
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:?nastavte ADMIN_PASSWORD v .env}
+      - SESSION_SECRET=${SESSION_SECRET:?nastavte SESSION_SECRET v .env}
+    volumes:
+      # Trvala data: SQLite databaze + nahrane obrazky.
+      # Zaloha webu = zkopirovat tyto dve slozky.
+      - ./data:/app/data
+      - ./uploads:/app/public/uploads

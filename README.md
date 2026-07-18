@@ -78,11 +78,41 @@ To je vše.
 - **Přihlášení** — jedno heslo správce (proměnná prostředí) a session cookie
   podepsaná HMAC přes vestavěný modul `crypto`. Přihlášení platí 12 hodin.
 
-## Nasazení
+## Nasazení přes Docker (doporučeno)
 
-Funguje na jakémkoli hostingu s Node 24.4+ (`npm run build && npm start`).
-Databáze je lokální soubor, takže hosting potřebuje **trvalý disk** (VPS,
-Railway volume, Fly volume apod.) — klasické, spolehlivé prostředí pro
+Na serveru stačí Docker — Node ani nic dalšího instalovat nemusíte:
+
+```bash
+git clone https://github.com/PodelavacCasio/NextCMS.git
+cd NextCMS
+
+# přihlašovací údaje administrace (povinné):
+cat > .env <<'EOF'
+ADMIN_PASSWORD=silne-heslo
+SESSION_SECRET=dlouhy-nahodny-retezec
+EOF
+
+docker compose up -d --build
+```
+
+Web běží na portu 80 (`http://IP-serveru`). Kontejner se sám restartuje
+po pádu i po rebootu serveru.
+
+- **Živá data** jsou na hostiteli ve složkách `./data` (databáze) a
+  `./uploads` (obrázky) — záloha webu = zkopírovat tyto dvě složky.
+  Databáze se při prvním startu sama vytvoří s ukázkovým obsahem.
+- **Aktualizace kódu:** `git pull && docker compose up -d --build`
+  (dat ve `./data` se pull nedotkne, v gitu nejsou).
+- Logy: `docker compose logs -f`
+
+## Nasazení bez Dockeru
+
+Funguje na jakémkoli hostingu s Node 24.4+ (`npm install && npm run build
+&& npm start`, výchozí port 3000). Databáze je lokální soubor, takže
+hosting potřebuje **trvalý disk** — klasické, spolehlivé prostředí pro
 SQLite. Serverless platformy s dočasným souborovým systémem (např. Vercel)
 o průběžné úpravy přijdou — tam stačí vyměnit `lib/db.ts` za hostovanou
 databázi; je to jediný soubor, který pracuje s úložištěm.
+
+Pro HTTPS dejte před aplikaci reverzní proxy (Caddy zvládne certifikáty
+automaticky) — platí pro obě varianty nasazení.
