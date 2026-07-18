@@ -3,7 +3,8 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "80:3000"
+      # host:kontejner — web je dostupny na portu 8000 serveru
+      - "8000:3000"
     environment:
       # Hodnoty nastavte v souboru .env vedle tohoto compose souboru:
       #   ADMIN_PASSWORD=silne-heslo
